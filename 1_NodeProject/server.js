@@ -1,23 +1,15 @@
+// Core Modules
 const http = require("http");
 const PORT = 3000 || process.env.PORT;
 const url = require("url");
 const fs = require("fs");
 
-//SERVER
-const replaceTemplate = (temp, product) => {
-  let output = temp.replace(/{%PRODUCTNAME%}/g, product.productName);
-  output = output.replace(/{%IMAGE%}/g, product.image);
-  output = output.replace(/{%PRICE%}/g, product.price);
-  output = output.replace(/{%FROM%}/g, product.from);
-  output = output.replace(/{%PRODUCTNUTRIENTNAME%}/g, product.nutrients);
-  output = output.replace(/{%QUANTITY%}/g, product.quantity);
-  output = output.replace(/{%DESCRIPTION%}/g, product.description);
-  output = output.replace(/{%ID%}/g, product.id);
+//Third party Modules
+const slugify = require("slugify");
+// Own Modules
+const replaceTemplate = require("./JSModules/replaceTemplate");
 
-  if (!product.organic)
-    output = output.replace(/{%NOT_ORGANIC%}/g, "not-organic");
-  return output;
-};
+//SERVER
 const templateOverview = fs.readFileSync(
   `${__dirname}/templates/template-overview.html`,
   "utf-8"
@@ -26,6 +18,9 @@ const templateCard = fs.readFileSync(
   `${__dirname}/templates/template-card.html`,
   "utf-8"
 );
+
+
+
 const templateProduct = fs.readFileSync(
   `${__dirname}/templates/template-product.html`,
   "utf-8"
@@ -33,6 +28,10 @@ const templateProduct = fs.readFileSync(
 
 const data = fs.readFileSync(`${__dirname}/data/data.json`, "utf-8"); // File was read asynchronously
 const dataObj = JSON.parse(data);
+
+const slugs = dataObj.map((el) => slugify(el.productName, { lower: true }));
+console.log(slugify("Fresh Avocados", { lower: true }));
+console.log(slugs);
 
 const server = http.createServer((req, res) => {
   console.log(url.parse(req.url, true));
