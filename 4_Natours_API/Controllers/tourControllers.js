@@ -11,6 +11,14 @@ const checkID = (req, res, next, val) => {
   next();
 };
 
+const checkBody = (req, res, next) => {
+  if (!req.body.name || !req.body.price)
+    return res
+      .status(400)
+      .json({ status: 'Fail', message: 'Missing Name or Price' });
+  next();
+};
+
 const getAllTours = (req, res) => {
   console.log(req.requestTime);
   return res.status(200).json({
@@ -74,6 +82,7 @@ const deleteTour = (req, res) => {
 
 module.exports = {
   checkID,
+  checkBody,
   getAllTours,
   getTour,
   createTour,
