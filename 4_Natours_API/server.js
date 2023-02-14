@@ -13,7 +13,8 @@ mongoose
   .connect(DB, {
     useNewUrlParser: true,
   })
-  .then(() => console.log(`DB Conection Successfull`));
+  .then(() => console.log(`DB Conection Successfull`))
+  .catch((err) => console.log(err));
 // console.log(app.get('env'));
 // console.log(process.env);
 // Server

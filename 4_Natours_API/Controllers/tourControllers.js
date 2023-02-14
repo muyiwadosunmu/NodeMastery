@@ -2,7 +2,16 @@ const Tour = require('../models/tourModels');
 
 const getAllTours = async (req, res) => {
   try {
-    const tours = await Tour.find();
+    const queryObject = { ...req.query }; //We're making a hardCopy
+    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    excludedFields.forEach((el) => delete queryObject[el]);
+
+    const tours = await Tour.find(queryObject);
+    // const tours = await Tour.find()
+    //   .where('duration')
+    //   .equals(5)
+    //   .where('difficulty')
+    //   .equals('easy');
     return res.status(200).json({
       status: 'Success',
       requestedAt: req.requestTime,
@@ -25,7 +34,7 @@ const createTour = async (req, res) => {
     const newTour = await Tour.create(reqBody);
     return res.status(201).json({
       status: `Success`,
-      data: newTour,
+      data: { tour: newTour },
     });
   } catch (error) {
     return res.status(404).json({
