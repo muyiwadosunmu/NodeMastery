@@ -1,5 +1,11 @@
 const Tour = require('../models/tourModels');
 
+const aliasTopTours = (req, res, next) => {
+  req.query.limit = '5';
+  req.query.sort = '-ratingsAverage,price';
+  req.fields = 'name,price,ratingsAverage,summary,difficulty';
+  next();
+};
 // Method 1
 // const tours = await Tours.find({
 //   duration: 5,
@@ -15,6 +21,14 @@ const Tour = require('../models/tourModels');
 //   .equals('easy');
 
 // EXEXCUTE QUERY
+
+class APIFeatures {
+  constructor(query, queryString) {
+    this.query = query;
+    this.queryString = queryString;
+  }
+  filter()
+};
 
 const getAllTours = async (req, res) => {
   try {
@@ -40,8 +54,29 @@ const getAllTours = async (req, res) => {
       query = query.sort('-createdAt');
     }
 
+    //3 FIELD LIMITING
+    if (req.query.fields) {
+      const fields = req.query.fields.split(',').join(' ');
+      query = query.select(fields);
+    } else {
+      query = query.select('-__v');
+    }
+
+    //4 PAGINATION
+    //?page=2&limit=10 --> page1(1-10), page2(11-20)
+    const page = req.query.page * 1 || 1; //Nice trick to convert string to Number
+    const limit = req.query.limit * 1 || 100;
+    const skip = (page - 1) * limit;
+
+    query = query.skip(skip).limit(limit);
+    if (req.query.page) {
+      const numTours = await Tour.countDocuments();
+      if (skip >= numTours) throw new Error('This page does not exist');
+    }
+
     // EXECUTE QUERY
     const tours = await query;
+    // query.sort().select().skip().limit()
 
     // SEND RESPONSE
     return res.status(200).json({
@@ -131,4 +166,11 @@ const deleteTour = async (req, res) => {
     });
   }
 };
-module.exports = { createTour, getAllTours, getTour, updateTour, deleteTour };
+module.exports = {
+  aliasTopTours,
+  createTour,
+  getAllTours,
+  getTour,
+  updateTour,
+  deleteTour,
+};
