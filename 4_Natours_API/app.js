@@ -25,7 +25,6 @@ app.use((req, res, next) => {
 });
 
 // Route Handlers
-
 // app.get('/api/v1/tours', getAllTours);
 // app.get('/api/v1/tours/:id', getTour);
 // app.post('/api/v1/tours', createTour);
@@ -36,6 +35,7 @@ app.use((req, res, next) => {
 
 // Routes => Middleware
 
+app.use(express.urlencoded({ extended: false }));
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
