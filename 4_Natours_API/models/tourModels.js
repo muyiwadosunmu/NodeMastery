@@ -58,6 +58,10 @@ const tourSchema = new mongoose.Schema(
       select: false,
     },
     startDates: [Date],
+    secretTour: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     toJSON: { virtuals: true },
@@ -69,12 +73,12 @@ tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
 
-//Document Middleware runs before .save() and .create() but not insertMany()
+/* DOCUMENT MIDDLEWARE */
+// runs before .save() and .create() but not insertMany()
 tourSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
   next();
 });
-
 // tourSchema.pre('save', (next) => {
 //   console.log('Will save document.....');
 //   next();
@@ -84,6 +88,23 @@ tourSchema.pre('save', function (next) {
 //   console.log(doc);
 //   next();
 // });
+
+/* Query MIDDLEWARE */
+// Allows us to run functions before or after a query is executed
+// tourSchema.pre('find', function (next) {
+tourSchema.pre(/^find/, function (next) {
+  //REGEX used
+  this.find({ secretTour: { $ne: true } });
+  this.start = Date.now();
+  next();
+});
+
+tourSchema.post(/^find/, function (docs, next) {
+  console.log(`Query took ${Date.now() - this.start} milliseconds`);
+  console.log(docs);
+  next();
+});
+
 
 const Tour = mongoose.model('Tour', tourSchema);
 module.exports = Tour;
