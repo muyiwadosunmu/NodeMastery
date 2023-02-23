@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const validator = require('validator');
+const validator = require('validator'); //Not later used
 
 const slugify = require('slugify');
 
