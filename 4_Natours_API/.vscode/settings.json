@@ -1,3 +1,4 @@
 {
-    "dotenv.enableAutocloaking": false
+  "dotenv.enableAutocloaking": false,
+  "codegpt.apiKey": "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"
 }

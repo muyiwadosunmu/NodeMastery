@@ -1,9 +1,11 @@
 const express = require('express');
 const {
   signUp,
+  protect,
   login,
   forgotPassword,
   resetPassword,
+  updatePassword,
 } = require('../Controllers/authController');
 
 const router = express.Router();
@@ -19,6 +21,7 @@ router.post('/signup', signUp);
 router.post('/login', login);
 router.post('/forgotPassword', forgotPassword);
 router.patch('/resetPassword/:token', resetPassword);
+router.patch('/updateMyPassword', protect, updatePassword);
 
 router.param('id', (req, res, next, val) => {
   console.log(`User id is ${val}`);
