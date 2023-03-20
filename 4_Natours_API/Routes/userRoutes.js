@@ -16,6 +16,7 @@ const {
   updateUser,
   deleteUser,
   updateMe,
+  deleteMe,
 } = require('../Controllers/userControllers');
 
 router.post('/signup', signUp);
@@ -24,6 +25,7 @@ router.post('/forgotPassword', forgotPassword);
 router.patch('/resetPassword/:token', resetPassword);
 router.patch('/updateMyPassword', protect, updatePassword);
 router.patch('/updateMe', protect, updateMe);
+router.delete('/deleteMe', protect, deleteMe);
 
 router.param('id', (req, res, next, val) => {
   console.log(`User id is ${val}`);
