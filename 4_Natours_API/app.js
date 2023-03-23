@@ -55,7 +55,7 @@ app.use(
       'ratingsAverage',
       'maxGroupSize',
       'difficulty',
-      'price',
+      'price ',
     ],
   })
 );

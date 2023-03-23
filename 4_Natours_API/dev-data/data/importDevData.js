@@ -14,13 +14,11 @@ mongoose
   .connect(DB, {
     useNewUrlParser: true,
   })
-  .then(() => console.log(`DB Conection Successfull}`))
+  .then(() => console.log(`DB Conection Successfull`))
   .catch((err) => console.log(err));
 
 // READ JSON FILE
-const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8')
-);
+const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, 'utf-8'));
 // IMPORT DATA
 const importData = async () => {
   try {
