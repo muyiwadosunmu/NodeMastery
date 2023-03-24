@@ -14,6 +14,7 @@ const globalErrorHandler = require('./Controllers/errorController');
 
 const userRouter = require('./Routes/userRoutes');
 const tourRouter = require('./Routes/tourRoutes');
+const reviewRouter = require('./Routes/reviewRoutes');
 
 //Middlewares
 
@@ -84,6 +85,7 @@ app.use((req, res, next) => {
 app.use(express.urlencoded({ extended: false }));
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`));
