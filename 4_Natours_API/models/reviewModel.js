@@ -39,10 +39,14 @@ const reviewSchema = new mongoose.Schema(
 
 //DOCUMENT MIDDLEWARE
 reviewSchema.pre(/^find/, function (next) {
+  // this.populate({
+  //   path: 'tour',
+  //   select: 'name',
+  // }).populate({
+  //   path: 'user',
+  //   select: 'name photo',
+  // });
   this.populate({
-    path: 'tour',
-    select: 'name',
-  }).populate({
     path: 'user',
     select: 'name photo',
   });
@@ -52,3 +56,7 @@ reviewSchema.pre(/^find/, function (next) {
 const Review = mongoose.model('Review', reviewSchema);
 
 module.exports = Review;
+
+// POST /tour/234fad4/reviews
+// GET /tour/234fa95/reviews
+// GET /tour/234fb66/reviews/94521da

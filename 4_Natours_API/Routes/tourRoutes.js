@@ -13,6 +13,9 @@ const {
   deleteTour,
 } = require('../Controllers/tourControllers');
 const { protect, restrictTo } = require('../Controllers/authController');
+const reviewRouter = require('./reviewRoutes');
+
+router.use('/:tourID/reviews', reviewRouter);
 
 router.route('/top-5-cheap').get(aliasTopTours, getAllTours);
 router.route('/monthly_plan/:year').get(getMonthlyPlan);

@@ -6,7 +6,10 @@ const {
   forgotPassword,
   resetPassword,
   updatePassword,
+  restrictTo,
 } = require('../Controllers/authController');
+
+const { createReview } = require('../Controllers/reviewControler');
 
 const router = express.Router();
 const {
