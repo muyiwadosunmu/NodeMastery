@@ -9,14 +9,13 @@ const {
   restrictTo,
 } = require('../Controllers/authController');
 
-const { createReview } = require('../Controllers/reviewControler');
-
 const router = express.Router();
 const {
   getAllUsers,
-  createUser,
+  getMe,
   getUser,
   updateUser,
+  createUser,
   deleteUser,
   updateMe,
   deleteMe,
@@ -26,15 +25,21 @@ router.post('/signup', signUp);
 router.post('/login', login);
 router.post('/forgotPassword', forgotPassword);
 router.patch('/resetPassword/:token', resetPassword);
-router.patch('/updateMyPassword', protect, updatePassword);
-router.patch('/updateMe', protect, updateMe);
-router.delete('/deleteMe', protect, deleteMe);
 
-router.param('id', (req, res, next, val) => {
-  console.log(`User id is ${val}`);
-  next();
-});
+// All routes after this should be protected
+router.use(protect);
+router.patch('/updateMyPassword', updatePassword);
+router.get('/me', getMe, getUser);
+router.patch('/updateMe', updateMe);
+router.delete('/deleteMe', deleteMe);
 
+// router.param('id', (req, res, next, val) => {
+//   console.log(`User id is ${val}`);
+//   next();
+// });
+
+//All Routes below are protected and restricted to admin
+router.use(restrictTo('admin'));
 router.route('/').get(getAllUsers).post(createUser);
 router.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
 

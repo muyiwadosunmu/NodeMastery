@@ -125,6 +125,12 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
+/**Indexing males our application more efficient */
+/**positive no for ascending order*/
+tourSchema.index({ price: 1 }); //Single index
+tourSchema.index({ price: 1, ratingsAverage: -1 }); //Compond Index
+tourSchema.index({ slug: 1 });
+
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });

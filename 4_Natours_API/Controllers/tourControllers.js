@@ -1,7 +1,8 @@
 const Tour = require('../models/tourModels');
-const APIFeatures = require('../utils/apiFeatures');
+// const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
+// const AppError = require('../utils/appError');
+const factory = require('./handlerFactory');
 
 const aliasTopTours = (req, res, next) => {
   req.query.limit = '5';
@@ -25,7 +26,7 @@ const aliasTopTours = (req, res, next) => {
 
 // EXEXCUTE QUERY
 
-const getAllTours = catchAsync(async (req, res, next) => {
+/* const getAllTours = catchAsync(async (req, res, next) => {
   console.log(req.query);
   // BUILD THE QUERY
   // 1A) FILTERING
@@ -55,18 +56,18 @@ const getAllTours = catchAsync(async (req, res, next) => {
       tours,
     },
   });
-});
+}); */
 
-const createTour = catchAsync(async (req, res, next) => {
+/* const createTour = catchAsync(async (req, res, next) => {
   const reqBody = req.body;
   const newTour = await Tour.create(reqBody);
   return res.status(201).json({
     status: `Success`,
-    data: { tour: newTour },
+    data: { tour: newTour }
   });
-});
+}); */
 
-const getTour = catchAsync(async (req, res, next) => {
+/* const getTour = catchAsync(async (req, res, next) => {
   const ID = req.params.id;
   const tour = await Tour.findById(ID).populate([
     { path: 'reviews', strictPopulate: false },
@@ -80,9 +81,9 @@ const getTour = catchAsync(async (req, res, next) => {
       tour,
     },
   });
-});
+}); */
 
-const updateTour = catchAsync(async (req, res, next) => {
+/* const updateTour = catchAsync(async (req, res, next) => {
   const ID = req.params.id;
   const updateBody = req.body;
   const tour = await Tour.findByIdAndUpdate(ID, updateBody, {
@@ -98,8 +99,17 @@ const updateTour = catchAsync(async (req, res, next) => {
       tour,
     },
   });
-});
+}); */
 
+const getAllTours = factory.getAll(Tour);
+const getTour = factory.getOne(Tour, {
+  path: 'reviews',
+  strictPopulate: false,
+});
+const createTour = factory.createOne(Tour);
+const updateTour = factory.updateOne(Tour);
+const deleteTour = factory.deleteOne(Tour);
+/* Normal Function for ourdeleteT
 const deleteTour = catchAsync(async (req, res, next) => {
   const ID = req.params.id;
   const tour = await Tour.findByIdAndDelete(ID, {});
@@ -110,7 +120,7 @@ const deleteTour = catchAsync(async (req, res, next) => {
     status: `Success`,
     data: null,
   });
-});
+}); */
 
 const getTourStats = catchAsync(async (req, res, next) => {
   const stats = await Tour.aggregate([
