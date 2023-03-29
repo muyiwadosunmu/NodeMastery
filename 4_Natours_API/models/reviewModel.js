@@ -67,16 +67,40 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
     },
   ]);
   console.log(stats);
-  await Tour.findByIdAndUpdate(tourId, {
-    ratingsQuantity: stats[0].nRating,
-    ratingsAverage: stats[0].avgRating,
-  });
+  if (stats.length > 0) {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: stats[0].nRating,
+      ratingsAverage: stats[0].avgRating,
+    });
+  } else {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: 0,
+      ratingsAverage: 4.5,
+    });
+  }
 };
 
 /**The code below is middleware function that allows us to be able to use statics method on our model  */
 reviewSchema.post('save', function () {
   // This points to current review
   this.constructor.calcAverageRatings(this.tour);
+});
+
+/**findByIdAndUpdate
+ * findByIdAndDelete
+ * NB=> We do not actually have document middleware for these but only query middleware. In query we actually don't have direct access to document to do something similar to above, we need access to the current review so that from there we can extract the tourId, then calculate the statistics
+ */
+reviewSchema.pre(/^findOneAnd/, async function (next) {
+  this.revi = await this.findOne({}).clone(); // Used .clone() an hack around
+  // console.log(this.revi);
+  next();
+});
+
+/**The =this= above was used to pass data from the premiddleware to the post middleware, we retrieved the review document from the =this= variable */
+
+reviewSchema.post(/^findOneAnd/, async function () {
+  /**await this.findOne(); does NOT work here , because query has already executed */
+  await this.revi.constructor.calcAverageRatings(this.revi.tour);
 });
 
 const Review = mongoose.model('Review', reviewSchema);

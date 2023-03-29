@@ -75,7 +75,7 @@ exports.getAll = (Model) =>
       .sort()
       .limitfields()
       .paginate();
-    const doc = await features.query();
+    const doc = await features.query;
     /* const doc = await features.query.explain();*/ //Used to check our application stats and helped us to implement indexing
 
     // query.sort().select().skip().limit()
