@@ -224,7 +224,6 @@ const getToursWithin = catchAsync(async (req, res, next) => {
   const tours = await Tour.find({
     startLocation: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
   });
-  console.log(distance, lat, lng, unit);
   return res.status(200).json({
     status: `Success`,
     results: tours.length,
@@ -233,6 +232,53 @@ const getToursWithin = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+const getDistances = catchAsync(async (req, res, next) => {
+  const { latlng, unit } = req.params;
+  const [lat, lng] = latlng.split(',');
+  const multiplier = unit === 'mi' ? 0.000621371 : 0.001;
+  if (!lat || !lng) {
+    next(
+      new AppError(
+        `Please provide latitude and longitude in the format lat,lng`,
+        400
+      )
+    );
+  }
+  const distances = await Tour.aggregate([
+    /**geoNear should always be the first stage, it requires at least one of our fields contain a geospatial index, which we did before in tourModels.js.
+     * But if we hace multiple fields with geospatial indexes then we need to use the key parameters
+     */
+    {
+      $geoNear: {
+        near: {
+          type: 'Point',
+          coordinates: [
+            lng * 1,
+            lat * 1,
+          ] /**multiplied by 1 to change them to numbers */,
+        },
+        distanceField: 'distance',
+        distanceMultiplier: multiplier,
+      },
+    },
+    {
+      $project: {
+        distance: 1,
+        name: 1,
+      },
+    },
+  ]);
+  return res.status(200).json({
+    status: `Success`,
+    data: {
+      data: distances,
+    },
+  });
+});
+/**  This below doesn't apply here
+   * const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1;
+});*/
 
 module.exports = {
   getMonthlyPlan,
@@ -244,4 +290,5 @@ module.exports = {
   updateTour,
   deleteTour,
   getToursWithin,
+  getDistances,
 };

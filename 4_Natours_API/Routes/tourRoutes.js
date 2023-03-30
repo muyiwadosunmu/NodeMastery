@@ -12,6 +12,7 @@ const {
   updateTour,
   deleteTour,
   getToursWithin,
+  getDistances,
 } = require('../Controllers/tourControllers');
 const { protect, restrictTo } = require('../Controllers/authController');
 const reviewRouter = require('./reviewRoutes');
@@ -31,6 +32,8 @@ router
 /** tours-distance?distance=233&center=-40,45&unit=mi 
     tours-distance/233/center/-40,45/unit/mi
 */
+
+router.route('/distances/:latlng/unit/:unit').get(getDistances);
 
 // router.param('id'); //To define parameter middleware in our application
 router
