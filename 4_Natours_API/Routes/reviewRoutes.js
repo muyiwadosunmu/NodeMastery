@@ -8,9 +8,9 @@ const {
   updateReview,
   deleteReview,
   setTourUserIds,
-} = require('../Controllers/reviewControler');
+} = require('../controllers/reviewControler');
 
-const { protect, restrictTo } = require('../Controllers/authController');
+const { protect, restrictTo } = require('../controllers/authController');
 
 router.use(protect);
 router

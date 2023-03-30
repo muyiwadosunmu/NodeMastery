@@ -13,8 +13,8 @@ const {
   deleteTour,
   getToursWithin,
   getDistances,
-} = require('../Controllers/tourControllers');
-const { protect, restrictTo } = require('../Controllers/authController');
+} = require('../controllers/tourControllers');
+const { protect, restrictTo } = require('../controllers/authController');
 const reviewRouter = require('./reviewRoutes');
 
 router.use('/:tourID/reviews', reviewRouter);

@@ -1,3 +1,4 @@
+const path = require('node:path');
 const express = require('express');
 
 const app = express();
@@ -10,14 +11,18 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 
 const AppError = require('./utils/appError');
-const globalErrorHandler = require('./Controllers/errorController');
+const globalErrorHandler = require('./controllers/errorController');
 
 const userRouter = require('./Routes/userRoutes');
 const tourRouter = require('./Routes/tourRoutes');
 const reviewRouter = require('./Routes/reviewRoutes');
 
 //Middlewares
-
+/**Make sure to install it */
+app.set('view-engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+// Serving static files
+app.use(express.static(path.join(__dirname, 'public')));
 // Set security HTTP headers
 app.use(helmet());
 
@@ -61,28 +66,26 @@ app.use(
   })
 );
 
-// Serving static files
-app.use(express.static(`${__dirname}/public`));
-
 // Test middleware
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
-  console.log(req.headers);
+  // console.log(req.headers);
   next();
 });
 
-// Route Handlers
-// app.get('/api/v1/tours', getAllTours);
-// app.get('/api/v1/tours/:id', getTour);
-// app.post('/api/v1/tours', createTour);
-// app.patch('/api/v1/tours/:id', updateTour);
-//  app.delete('/api/v1/tours/:id', deleteTour);
+app.use(express.urlencoded({ extended: false }));
 
+/**SSR Routes */
+app.get('/', (req, res) => {
+  res.status(200).render('base.pug', {
+    tour: 'The forest hiker',
+    user: 'Muyiwa',
+  });
+});
 //User Route_Handlers
 
 // Routes => Middleware
 
-app.use(express.urlencoded({ extended: false }));
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);

@@ -7,7 +7,7 @@ const {
   resetPassword,
   updatePassword,
   restrictTo,
-} = require('../Controllers/authController');
+} = require('../controllers/authController');
 
 const router = express.Router();
 const {
@@ -19,7 +19,7 @@ const {
   deleteUser,
   updateMe,
   deleteMe,
-} = require('../Controllers/userControllers');
+} = require('../controllers/userControllers');
 
 router.post('/signup', signUp);
 router.post('/login', login);

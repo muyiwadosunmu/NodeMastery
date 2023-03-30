@@ -1,0 +1,17 @@
+doctype
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    //- Inerpolation below
+    title Natours | #{tour}
+    link(rel='stylesheet', href='css/style.css')
+    link(rel='shortcut icon' type='image/png' href='img/favicon.png')
+
+  body
+    //-Buffered code
+    h1= tour  
+    h2= user.toUpperCase()
+    //-Unbuffered code
+    - const x = 9;
+    h2= 2 * x
+    p This is just some text
