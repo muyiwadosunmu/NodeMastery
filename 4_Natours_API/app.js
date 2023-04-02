@@ -82,6 +82,18 @@ app.get('/', (req, res) => {
     user: 'Muyiwa',
   });
 });
+
+app.get('/overview', (req, res) =>
+  res.status(200).render('overview.pug', {
+    title: 'All Tours',
+  })
+);
+
+app.get('/tour', (req, res) =>
+  res.status(200).render('tour.pug', {
+    title: 'The Forst Hiker',
+  })
+);
 //User Route_Handlers
 
 // Routes => Middleware
