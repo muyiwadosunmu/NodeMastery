@@ -16,6 +16,7 @@ const globalErrorHandler = require('./controllers/errorController');
 const userRouter = require('./Routes/userRoutes');
 const tourRouter = require('./Routes/tourRoutes');
 const reviewRouter = require('./Routes/reviewRoutes');
+const viewRouter = require('./Routes/viewRoutes');
 
 //Middlewares
 /**Make sure to install it */
@@ -75,29 +76,13 @@ app.use((req, res, next) => {
 
 app.use(express.urlencoded({ extended: false }));
 
-/**SSR Routes */
-app.get('/', (req, res) => {
-  res.status(200).render('base.pug', {
-    tour: 'The forest hikers',
-    user: 'Muyiwa',
-  });
-});
+/**SSR Routes were previously here*/
 
-app.get('/overview', (req, res) =>
-  res.status(200).render('overview.pug', {
-    title: 'All Tours',
-  })
-);
-
-app.get('/tour', (req, res) =>
-  res.status(200).render('tour.pug', {
-    title: 'The Forst Hiker',
-  })
-);
 //User Route_Handlers
 
 // Routes => Middleware
 
+app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
