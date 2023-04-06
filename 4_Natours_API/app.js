@@ -78,7 +78,7 @@ app.use(express.urlencoded({ extended: false }));
 /**SSR Routes */
 app.get('/', (req, res) => {
   res.status(200).render('base.pug', {
-    tour: 'The forest hiker',
+    tour: 'The forest hikers',
     user: 'Muyiwa',
   });
 });
