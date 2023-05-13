@@ -24,7 +24,7 @@ exports.getTour = catchAsync(async (req, res) => {
 
   //3 Render template using data from step1
   res.status(200).render('tour.pug', {
-    title: 'The Forst Hiker',
+    title: `${tour.name} Tour`,
     tour: tour,
   });
 });
