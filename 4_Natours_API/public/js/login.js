@@ -1,9 +1,13 @@
+import axios from 'axios';
+import { showAlert } from './alerts';
+
 const headers = {
   'Cross-Origin-Embedder-Policy': 'require-corp',
   'Cross-Origin-Opener-Policy': 'same-origin',
   'Content-Type': 'application/json',
 };
-const login = async (email, password) => {
+
+export const login = async (email, password) => {
   try {
     const res = await axios({
       method: 'POST',
@@ -15,21 +19,12 @@ const login = async (email, password) => {
       },
     });
     if (res.data.status === 'success') {
-      alert('Logged In successfully');
+      showAlert('successs', 'Logged In successfully');
       window.setTimeout(() => {
         location.assign('/');
       }, 1500);
     }
   } catch (error) {
-    alert(error.response.data.message);
+    showAlert('error', err.response.data.message);
   }
 };
-
-document.querySelector('.form').addEventListener('submit', (e) => {
-  e.preventDefault();
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-  console.log(email);
-  console.log(password);
-  login(email, password);
-});
