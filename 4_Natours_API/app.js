@@ -19,12 +19,9 @@ const viewRouter = require('./Routes/viewRoutes');
 
 //Middlewares
 /**Make sure to install it */
-// app.use(
-//   cors({
-//     origin: 'https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js',
-//   })
+// app.use(cors());
 // );
-app.use(express.static(path.join(__dirname, './public')));
+app.use(express.static(path.join(__dirname, 'public')));
 app.set('view-engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 // Serving static files
@@ -33,7 +30,7 @@ app.use(helmet());
 app.use((req, res, next) => {
   res.setHeader(
     'Content-Security-Policy',
-    "script-src 'self' https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"
+    "script-src 'self' https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"
   );
   return next();
 });

@@ -1,3 +1,5 @@
+const fetch = (...args) =>
+  import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const Tour = require('../models/tourModels');
 const catchAsync = require('../utils/catchAsync');
 
@@ -42,3 +44,17 @@ exports.getLoginForm = (req, res) => {
     title: 'Log into your account',
   });
 };
+// exports.postLoginForm = catchAsync(async (req, res, next) => {
+//   const { email, password } = req.body;
+//   const response = await fetch('https://127.0.0.1:3000/api/v1/users/login', {
+//     method: 'POST',
+//     body: JSON.stringify({ email, password }),
+//     headers: { 'Content-Type': 'application/json' },
+//   });
+//   const data = await response.json();
+//   console.log(data);
+//   res.status(200).render('login.pug', {
+//     title: 'Log into your account',
+//     data,
+//   });
+// });
