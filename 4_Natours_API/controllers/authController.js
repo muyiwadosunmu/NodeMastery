@@ -60,6 +60,13 @@ const login = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
+const logout = (req, res, next) => {
+  res.cookie('jwt', 'logged out', {
+    expiresIn: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
+  res.status(200).json({ status: 'success' });
+};
 const protect = catchAsync(async (req, res, next) => {
   //1. Get token and check if it's there
   let token;
@@ -224,6 +231,7 @@ const updatePassword = catchAsync(async (req, res, next) => {
 module.exports = {
   signUp,
   isLoggedIn,
+  logout,
   login,
   protect,
   restrictTo,
