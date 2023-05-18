@@ -1,7 +1,6 @@
 console.log('Hello from client side');
 
 const locations = JSON.parse(document.getElementById('map').dataset.locations);
-console.log(locations);
 
 mapboxgl.accessToken =
   'pk.eyJ1IjoibXV5aXdhZGV2IiwiYSI6ImNsaHM1OWFqMTJoYm8zZW9kbjd3aWFybnkifQ.pmM2zU8RlfKbFGaq2Y--Ng';

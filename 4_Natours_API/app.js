@@ -1,18 +1,17 @@
 const path = require('node:path');
 const express = require('express');
-
+const cors = require('cors');
 const app = express();
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
-
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
+const cookieParser = require('cookie-parser');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
-
 const userRouter = require('./Routes/userRoutes');
 const tourRouter = require('./Routes/tourRoutes');
 const reviewRouter = require('./Routes/reviewRoutes');
@@ -20,12 +19,24 @@ const viewRouter = require('./Routes/viewRoutes');
 
 //Middlewares
 /**Make sure to install it */
+// app.use(
+//   cors({
+//     origin: 'https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js',
+//   })
+// );
+app.use(express.static(path.join(__dirname, './public')));
 app.set('view-engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 // Serving static files
-app.use(express.static(path.join(__dirname, 'public')));
 // Set security HTTP headers
 app.use(helmet());
+app.use((req, res, next) => {
+  res.setHeader(
+    'Content-Security-Policy',
+    "script-src 'self' https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"
+  );
+  return next();
+});
 
 //Development logging
 console.log(process.env.NODE_ENV);
@@ -47,6 +58,7 @@ app.use(
     limit: '10kb',
   })
 );
+app.use(cookieParser());
 
 // Data Snitization against NoSQL Query injection
 /*Checks req.body, req.query, req.params and filters out all $ sign and .(dots)*/
@@ -71,6 +83,7 @@ app.use(
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   // console.log(req.headers);
+  console.log(req.cookies);
   next();
 });
 
