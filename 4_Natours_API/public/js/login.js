@@ -7,16 +7,21 @@ const login = async (email, password) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: 'http://127.0.0.1:3000/api/v1/users/login',
+      url: 'http://localhost:3000/api/v1/users/login',
       headers,
       data: {
         email,
         password,
       },
     });
-    console.log(res);
+    if (res.data.status === 'success') {
+      alert('Logged In successfully');
+      window.setTimeout(() => {
+        location.assign('/');
+      }, 1500);
+    }
   } catch (error) {
-    console.log(error.response.data);
+    alert(error.response.data.message);
   }
 };
 
