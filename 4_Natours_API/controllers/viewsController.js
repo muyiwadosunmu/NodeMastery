@@ -1,6 +1,7 @@
 const fetch = (...args) =>
   import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const Tour = require('../models/tourModels');
+const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
 exports.getOverview = catchAsync(async (req, res) => {
@@ -23,6 +24,9 @@ exports.getTour = catchAsync(async (req, res, next) => {
       fields: 'reviews rating user',
     })
     .exec();
+  if (!tour) {
+    return next(new AppError("There's no tour with that name.", 404));
+  }
 
   //2 Build the template
 
