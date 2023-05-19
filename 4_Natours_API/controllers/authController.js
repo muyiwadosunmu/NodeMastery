@@ -67,6 +67,7 @@ const logout = (req, res, next) => {
   });
   res.status(200).json({ status: 'success' });
 };
+
 const protect = catchAsync(async (req, res, next) => {
   //1. Get token and check if it's there
   let token;
@@ -100,6 +101,7 @@ const protect = catchAsync(async (req, res, next) => {
   }
   // Grant Access To Protected Route
   req.user = currentUser;
+  res.locals.user = currentUser;
   next();
 });
 

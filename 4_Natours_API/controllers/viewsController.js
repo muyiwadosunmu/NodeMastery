@@ -48,6 +48,12 @@ exports.getLoginForm = (req, res) => {
     title: 'Log into your account',
   });
 };
+
+exports.getAccount = (req, res, next) => {
+  res.status(200).render('account.pug', {
+    title: 'Your Account',
+  });
+};
 // exports.postLoginForm = catchAsync(async (req, res, next) => {
 //   const { email, password } = req.body;
 //   const response = await fetch('https://127.0.0.1:3000/api/v1/users/login', {
