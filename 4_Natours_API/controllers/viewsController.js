@@ -1,5 +1,4 @@
-const fetch = (...args) =>
-  import('node-fetch').then(({ default: fetch }) => fetch(...args));
+const User = require('../models/userModel');
 const Tour = require('../models/tourModels');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
@@ -54,6 +53,25 @@ exports.getAccount = (req, res, next) => {
     title: 'Your Account',
   });
 };
+
+exports.updateUserData = catchAsync(async (req, res, next) => {
+  // console.log ('update body', req.body);
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user.id,
+    {
+      name: req.body.name,
+      email: req.body.email,
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+  res.status(200).render('account.pug', {
+    title: 'Your Account',
+    user: updatedUser,
+  });
+});
 // exports.postLoginForm = catchAsync(async (req, res, next) => {
 //   const { email, password } = req.body;
 //   const response = await fetch('https://127.0.0.1:3000/api/v1/users/login', {

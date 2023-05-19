@@ -50,11 +50,9 @@ const limiter = rateLimit({
 //Limit requests from same API
 app.use('/api', limiter); //We're limiting it to our API routes
 // Body parser, reading data from body into req.body
-app.use(
-  express.json({
-    limit: '10kb',
-  })
-);
+app.use(express.json({ limit: '10kb' }));
+// Needed to parse data from a url encoded form
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(cookieParser());
 
 // Data Snitization against NoSQL Query injection
