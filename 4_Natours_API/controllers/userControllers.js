@@ -76,9 +76,10 @@ const updateMe = catchAsync(async (req, res, next) => {
     );
   }
 
-  /* iltereObj -> A function to filter out the unwanted field names not allowed to be updated */
+  //2. FiltereObj -> A function to filter out the unwanted field names not allowed to be updated */
   const filteredBody = filtereObj(req.body, 'name', 'email');
-  //2. Update user document
+  if (req.file) filteredBody.photo = req.file.filename;
+  //3. Update user document
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
     new: true,
     runValidators: true,
