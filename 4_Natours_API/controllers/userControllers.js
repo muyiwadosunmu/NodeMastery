@@ -1,7 +1,38 @@
+const multer = require('multer');
 const User = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const factory = require('./handlerFactory');
+
+/**Configure a multter upload */
+/**If no file path is specidied, it saves to the memory */
+/**images are not directly uploaded in the DB, but rather our file system, then in the DB we put a link to that image*/
+/**In our scenario in the user docs we'll have the name of the uploaded file */
+const multerStorage = multer.diskStorage({
+  /**Destination is acall back function that has access to req, file, callback */
+  destination: (req, file, callback) => {
+    callback(null, 'public/img/users');
+  },
+  filename: (req, file, callback) => {
+    // user-user ID-timestamp.fileExtension
+    const ext = file.mimetype.split('/')[1];
+    callback(null, `user-${req.user.id}-${Date.now()}.${ext}`);
+  },
+});
+
+const multerFilter = (req, file, callback) => {
+  if (file.mimetype.startsWith('image')) {
+    callback(null, true);
+  } else {
+    callback(
+      new AppError('Not an image!, Please upload only images', 400),
+      false
+    );
+  }
+};
+
+const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
+const uploadUserPhoto = upload.single('photo');
 
 const filtereObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -32,7 +63,7 @@ const getMe = catchAsync(async (req, res, next) => {
 });
 
 const updateMe = catchAsync(async (req, res, next) => {
-  console.log("Helo");
+  console.log('Helo');
   console.log(req.file);
   console.log(req.body);
   //1. Create error if user POSTs password data
@@ -88,4 +119,5 @@ module.exports = {
   deleteUser,
   updateMe,
   deleteMe,
+  uploadUserPhoto,
 };

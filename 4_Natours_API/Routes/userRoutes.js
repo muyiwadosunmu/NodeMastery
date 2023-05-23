@@ -1,5 +1,4 @@
 const express = require('express');
-const multer = require('multer');
 const {
   signUp,
   protect,
@@ -20,10 +19,8 @@ const {
   deleteUser,
   updateMe,
   deleteMe,
+  uploadUserPhoto,
 } = require('../controllers/userControllers');
-
-/**If we do not pass in any destination, images would be saved in the memory */
-const upload = multer({ dest: 'public/img/users' });
 
 const router = express.Router();
 router.post('/signup', signUp);
@@ -36,7 +33,7 @@ router.patch('/resetPassword/:token', resetPassword);
 router.use(protect);
 router.patch('/updateMyPassword', updatePassword);
 router.get('/me', getMe, getUser);
-router.patch('/updateMe', upload.single('photo'), updateMe);
+router.patch('/updateMe', uploadUserPhoto, updateMe);
 router.delete('/deleteMe', deleteMe);
 
 // router.param('id', (req, res, next, val) => {
