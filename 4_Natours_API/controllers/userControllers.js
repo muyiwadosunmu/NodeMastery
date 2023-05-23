@@ -1,4 +1,5 @@
 const multer = require('multer');
+const sharp = require('sharp');
 const User = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
@@ -8,17 +9,24 @@ const factory = require('./handlerFactory');
 /**If no file path is specidied, it saves to the memory */
 /**images are not directly uploaded in the DB, but rather our file system, then in the DB we put a link to that image*/
 /**In our scenario in the user docs we'll have the name of the uploaded file */
-const multerStorage = multer.diskStorage({
-  /**Destination is acall back function that has access to req, file, callback */
-  destination: (req, file, callback) => {
-    callback(null, 'public/img/users');
-  },
-  filename: (req, file, callback) => {
-    // user-user ID-timestamp.fileExtension
-    const ext = file.mimetype.split('/')[1];
-    callback(null, `user-${req.user.id}-${Date.now()}.${ext}`);
-  },
-});
+
+/**
+ *
+ *
+ */
+// const multerStorage = multer.diskStorage({
+//   /**Destination is acall back function that has access to req, file, callback */
+//   destination: (req, file, callback) => {
+//     callback(null, 'public/img/users');
+//   },
+//   filename: (req, file, callback) => {
+//     // user-user ID-timestamp.fileExtension
+//     const ext = file.mimetype.split('/')[1];
+//     callback(null, `user-${req.user.id}-${Date.now()}.${ext}`);
+//   },
+// });
+
+const multerStorage = multer.memoryStorage();
 
 const multerFilter = (req, file, callback) => {
   if (file.mimetype.startsWith('image')) {
@@ -32,8 +40,22 @@ const multerFilter = (req, file, callback) => {
 };
 
 const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
+
 const uploadUserPhoto = upload.single('photo');
 
+const resizeUserPhoto = (req, res, next) => {
+  /**At this point we want to believe there's a file being uploaded */
+  if (!req.file) return next();
+  req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
+  sharp(req.file.buffer)
+    .resize(500, 500)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/users/${req.file.filename}`);
+  next();
+
+  // Remember when doing image processing it's best to not save the image to a disk but rather in memory
+};
 const filtereObj = (obj, ...allowedFields) => {
   const newObj = {};
   Object.keys(obj).forEach((el) => {
@@ -121,4 +143,5 @@ module.exports = {
   updateMe,
   deleteMe,
   uploadUserPhoto,
+  resizeUserPhoto,
 };
