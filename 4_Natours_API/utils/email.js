@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 const pug = require('pug');
-const htmltoText = require('html-to-text');
+const { convert } = require('html-to-text');
 
 module.exports = class Email {
   constructor(user, url) {
@@ -10,7 +10,7 @@ module.exports = class Email {
     this.from = `Oluwamuyiwa Dosunmu <${process.env.EMAIL_FROM}>`;
   }
 
-  async newTransport() {
+  newTransport() {
     if (process.env.NODE_ENV === 'production') {
       // SendGrid
       return 1;
@@ -43,16 +43,15 @@ module.exports = class Email {
       to: this.to,
       subject: subject,
       html: html,
-      text: htmltoText.fromString(html),
+      text: convert(html),
     };
+    console.log(mailOptions.text);
 
     //3 Create a Transport and send email
     await this.newTransport().sendMail(mailOptions);
   }
 
   async sendWelcome() {
-    await this.send('welcome', 'Welcome to the Natours Family');
+    await this.send('welcome', 'Welcome, we love to have you on board');
   }
 };
-
-module.exports = sendEmail;
