@@ -40,10 +40,37 @@ const uploadTourImages = upload.fields([
  * const singleImageUpload = upload.singlr("image")  => req.file
  */
 
-const resizeTourImages = (req, res, next) => {
-  console.log(req.files);
+const resizeTourImages = catchAsync(async (req, res, next) => {
+  if (!req.files.imageCover || !req.files.images) return next();
+
+  // 1) Process Cover Image
+  /**our updateOne factory function takes in req.body so we need to add imageCover to the req.body object */
+  req.body.imageCover = `tour-${req.params.id}-${Date.now()}-cover.jpeg`;
+  await sharp(req.files.imageCover[0].buffer)
+    .resize(2000, 1333)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/tours/${req.body.imageCover}`);
+
+  //2) Processing Images
+  // a callback that gets access to current >= file and index (which is zero-based) =<
+  req.body.images = [];
+
+  await Promise.all(
+    req.files.images.map(async (file, index) => {
+      // In this case we need to create the current filename
+      const filename = `tour-${req.params.id}-${Date.now()}-${index + 1}.jpeg`;
+      await sharp(file.buffer)
+        .resize(2000, 1333)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90 })
+        .toFile(`public/img/tours/${filename}`);
+
+      req.body.images.push(filename);
+    })
+  );
   next();
-};
+});
 
 // Method 1
 // const tours = await Tours.find({

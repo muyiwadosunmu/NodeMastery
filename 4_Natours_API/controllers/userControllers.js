@@ -43,11 +43,11 @@ const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
 
 const uploadUserPhoto = upload.single('photo');
 
-const resizeUserPhoto = (req, res, next) => {
+const resizeUserPhoto = catchAsync(async (req, res, next) => {
   /**At this point we want to believe there's a file being uploaded */
   if (!req.file) return next();
   req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
-  sharp(req.file.buffer)
+  await sharp(req.file.buffer)
     .resize(500, 500)
     .toFormat('jpeg')
     .jpeg({ quality: 90 })
@@ -55,7 +55,7 @@ const resizeUserPhoto = (req, res, next) => {
   next();
 
   // Remember when doing image processing it's best to not save the image to a disk but rather in memory
-};
+});
 const filtereObj = (obj, ...allowedFields) => {
   const newObj = {};
   Object.keys(obj).forEach((el) => {
