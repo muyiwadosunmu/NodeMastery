@@ -1,3 +1,5 @@
+const multer = require('multer');
+const sharp = require('sharp');
 const Tour = require('../models/tourModels');
 // const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('../utils/catchAsync');
@@ -8,6 +10,38 @@ const aliasTopTours = (req, res, next) => {
   req.query.limit = '5';
   req.query.sort = '-ratingsAverage,price';
   req.fields = 'name,price,ratingsAverage,summary,difficulty';
+  next();
+};
+
+const multerStorage = multer.memoryStorage();
+
+const multerFilter = (req, file, callback) => {
+  if (file.mimetype.startsWith('image')) {
+    callback(null, true);
+  } else {
+    callback(
+      new AppError('Not an image!, Please upload only images', 400),
+      false
+    );
+  }
+};
+
+const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
+const uploadTourImages = upload.fields([
+  {
+    name: 'imageCover',
+    maxCount: 1,
+  },
+  { name: 'images', maxCount: 3 },
+]);
+
+/**Let's say we want a field that takes in multiple images
+ * const multipleImagesToAField = upload.array('images',5) => req.files
+ * const singleImageUpload = upload.singlr("image")  => req.file
+ */
+
+const resizeTourImages = (req, res, next) => {
+  console.log(req.files);
   next();
 };
 
@@ -288,6 +322,8 @@ module.exports = {
   getAllTours,
   getTour,
   updateTour,
+  uploadTourImages,
+  resizeTourImages,
   deleteTour,
   getToursWithin,
   getDistances,
