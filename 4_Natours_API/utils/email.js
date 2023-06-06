@@ -7,13 +7,21 @@ module.exports = class Email {
     this.to = user.email;
     this.firstName = user.name.split(' ')[0];
     this.url = url;
-    this.from = `Oluwamuyiwa Dosunmu <${process.env.EMAIL_FROM}>`;
+    this.from = `Oluwamuyiwa Dosunmu <${process.env.ZOHO_EMAIL_USERNAME}>`;
   }
 
   newTransport() {
     if (process.env.NODE_ENV === 'production') {
-      // SendGrid
-      return 1;
+      // Zoho
+      return nodemailer.createTransport({
+        host: process.env.ZOHO_EMAIL_HOST,
+        port: process.env.ZOHO_EMAIL_PORT,
+        secure: true,
+        auth: {
+          user: process.env.ZOHO_EMAIL_USERNAME,
+          pass: process.env.ZOHO_EMAIL_PASSWORD,
+        },
+      });
     }
     //1 Create a transporter
     return nodemailer.createTransport({
@@ -25,6 +33,7 @@ module.exports = class Email {
       },
     });
   }
+
   // Send the actual email
   async send(template, subject) {
     //1) Render HTML based on a pug template

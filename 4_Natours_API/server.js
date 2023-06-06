@@ -20,7 +20,7 @@ mongoose
   .set('strictQuery', false)
   .connect(DB, {
     useNewUrlParser: true,
-    useUnifiedTopology: true,
+    // useUnifiedTopology: true,
   })
   .then(() => console.log(`DB Conection Successfull`))
   .catch((err) => console.log(`Error:`, err));
