@@ -1,7 +1,4 @@
-console.log('Hello from client side');
-
-const locations = JSON.parse(document.getElementById('map').dataset.locations);
-
+/* eslint-disable */
 export const displayMap = (locations) => {
   mapboxgl.accessToken =
     'pk.eyJ1IjoibXV5aXdhZGV2IiwiYSI6ImNsaHM1OWFqMTJoYm8zZW9kbjd3aWFybnkifQ.pmM2zU8RlfKbFGaq2Y--Ng';
@@ -15,11 +12,13 @@ export const displayMap = (locations) => {
   });
 
   const bounds = new mapboxgl.LngLatBounds();
+
   locations.forEach((loc) => {
-    //Create marker
+    // Create marker
     const el = document.createElement('div');
     el.className = 'marker';
-    //Add Marker
+
+    // Add marker
     new mapboxgl.Marker({
       element: el,
       anchor: 'bottom',
@@ -32,19 +31,19 @@ export const displayMap = (locations) => {
       offset: 30,
     })
       .setLngLat(loc.coordinates)
-      .setHTML(`<p>Date  ${loc.day}: ${loc.description}</p>`)
+      .setHTML(`<p>Day ${loc.day}: ${loc.description}</p>`)
       .addTo(map);
 
-    //Extend map bounds to include current loction
+    // Extend map bounds to include current location
     bounds.extend(loc.coordinates);
   });
 
   map.fitBounds(bounds, {
     padding: {
-      top: '200',
-      bottom: '150',
-      right: '100',
-      left: '200',
+      top: 200,
+      bottom: 150,
+      left: 100,
+      right: 100,
     },
   });
 };

@@ -19,9 +19,18 @@ const bookingRouter = require('./Routes/bookingRoutes');
 const viewRouter = require('./Routes/viewRoutes');
 
 //Middlewares
-/**Make sure to install it */
-// app.use(cors());
-// );
+app.use(
+  cors({
+    origin: '*',
+  })
+);
+// Access-Control-Allow-Origin *
+// api.natours.com, front-end natours.com
+// app.use(cors({
+//   origin: 'https://www.natours.com'
+// }))
+
+app.options('*', cors());
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view-engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
