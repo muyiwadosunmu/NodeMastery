@@ -220,7 +220,7 @@ const getTourStats = catchAsync(async (req, res, next) => {
 
 const getMonthlyPlan = catchAsync(async (req, res, next) => {
   const year = req.params.year * 1;
-  console.log(year);
+  // console.log(year);
   const plan = await Tour.aggregate([
     {
       $unwind: '$startDates',

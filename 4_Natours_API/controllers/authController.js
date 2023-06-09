@@ -37,7 +37,7 @@ const createSendToken = (user, statusCode, res) => {
 const signUp = catchAsync(async (req, res, next) => {
   const newUser = await User.create(req.body);
   const url = `${req.protocol}://${req.get('host')}/me`;
-  console.log(url);
+  // console.log(url);
   await new Email(newUser, url).sendWelcome();
   createSendToken(newUser, 201, res);
 });
@@ -77,7 +77,7 @@ const protect = catchAsync(async (req, res, next) => {
     token = req.cookies.jwt;
   }
 
-  console.log(token);
+  // console.log(token);
   if (!token) {
     return next(new AppError(`Unauthorized, please log in to get access`, 401));
   }
@@ -137,7 +137,7 @@ const restrictTo = (...roles) =>
   catchAsync(async (req, res, next) => {
     // roles ['admin', 'lead-guide']. role='user'
     if (!roles.includes(req.user.role)) {
-      console.log(req);
+      // console.log(req);
       return next(
         new AppError('You do not have permission to perform this action', 403)
       );
